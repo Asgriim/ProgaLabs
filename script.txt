@@ -1,1 +1,12 @@
-exec
+add
+123
+123
+12
+34
+45
+4545
+34234
+oceanic
+high
+lox
+command

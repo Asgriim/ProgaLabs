@@ -23,7 +23,7 @@ public class PrintUniqueSOL implements Command<String>, Serializable {
     public String execute(String[] argument) {
         if(collectionManager.getUniqueStandards().isEmpty()){
             if(collectionManager.getCollection().isEmpty()) return "collection is empty\n";
-            return "no cities with climate\n";
+            return "no cities with standard of living\n";
         }
         return collectionManager.getUniqueStandards().toString() + "\n";
     }

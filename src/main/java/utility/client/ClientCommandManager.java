@@ -94,8 +94,8 @@ public class ClientCommandManager extends CommandManager {
         try {
             validator.validate(getCommandName(),getArgument());
         } catch (NoValidArgumentException e) {
-           throw new ScriptInputIssueException("script error"
-                     + ": " + e.getMessage() + "\n");
+           throw new ScriptInputIssueException("script error\n"
+                     + getCommandName() + ": " + e.getMessage() + "\n");
         }
         String currClass = commandClassMap.get(getCommandName());
         if (currClass.equals("Exit")) System.exit(0);

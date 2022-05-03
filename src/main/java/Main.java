@@ -40,29 +40,5 @@ public class Main {
             System.out.println("or  java -jar lab6.jar server helios.cs.ifmo.ru 228");
             System.exit(1);
         }
-//        if (args.length != 0 && args[0].equals("")) {
-//            Client client = new Client();
-//
-//            Server server = new Server();
-//            server.run(args[0], Integer.parseInt(args[1]));
-//            ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[1024]);
-//            DatagramChannel datagramChannel = DatagramChannel.open();
-//            datagramChannel.bind(new InetSocketAddress(InetAddress.getLocalHost(), 50000));
-//            datagramChannel.configureBlocking(false);
-//            SocketAddress clientAddress = null;
-//            while (clientAddress == null) {
-//                clientAddress = datagramChannel.receive(byteBuffer);
-//            }
-//            System.out.println(clientAddress);
-//            System.out.println(byteBuffer);
-//            byteBuffer.flip();
-//            System.out.println(new String(byteBuffer.array(),0,byteBuffer.limit()));
-//            byteBuffer.clear();
-//            System.out.println(byteBuffer);
-//            byteBuffer.put("mat'e bal".getBytes());
-//            System.out.println(byteBuffer);
-//            byteBuffer.flip();
-//            datagramChannel.send(byteBuffer, clientAddress);
-
     }
 }

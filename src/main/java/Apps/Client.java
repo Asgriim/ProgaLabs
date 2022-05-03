@@ -1,18 +1,12 @@
 package Apps;
-
 import API.ServerRequest;
 import API.ServerResponse;
-import commands.Add;
-import commands.Command;
-import commands.Exit;
 import readers.CityReader;
-import utility.CommandManager;
 import utility.FileManager;
 import utility.SerializationHelper;
 import utility.client.ClientCommandManager;
 import utility.client.ClientValidator;
 import utility.client.WaitResponse;
-
 import javax.xml.bind.JAXBException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -22,11 +16,8 @@ import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.util.Arrays;
-import java.util.Map;
 
 public class Client {
 

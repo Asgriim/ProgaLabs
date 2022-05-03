@@ -29,6 +29,7 @@ public class Server {
     public Server(){
         this.exit = new Exit("exit","none","none");
     }
+
     public void run(String hostName,int port)  {
         Logger logger = LogManager.getLogger();
         try {
