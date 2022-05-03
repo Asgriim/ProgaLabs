@@ -2,6 +2,7 @@ package commands;
 
 import data.City;
 import data.Climate;
+import data.Human;
 import data.StandardOfLiving;
 import exсeptions.NoValidArgumentException;
 import utility.CollectionManager;
@@ -60,7 +61,12 @@ public class Update implements Command<Boolean>, Serializable {
             tempCity.setGovernor(null);
         }
         else {
-            tempCity.getGovernor().setName(argument[9]);
+            if (tempCity.getGovernor() == null){
+                tempCity.setGovernor(new Human(argument[9]));
+            }
+            else {
+                tempCity.getGovernor().setName(argument[9]);
+            }
         }
         return true;
     }
