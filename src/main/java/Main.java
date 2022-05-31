@@ -12,9 +12,7 @@ public class Main {
                 try {
                     client.run(args[1].toLowerCase(Locale.ROOT), Integer.parseInt(args[2]));
                     return;
-                } catch (IOException e) {
-                    System.out.println("unexpected error");
-                } catch (JAXBException e) {
+                } catch (IOException | JAXBException e) {
                     System.out.println("unexpected error");
                 }
             }
