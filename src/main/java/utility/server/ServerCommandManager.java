@@ -39,7 +39,7 @@ public class ServerCommandManager extends CommandManager {
         super(fileManager, writer, null);
         this.channel = channel;
         this.serializer = new SerializationHelper();
-        this.buffer = ByteBuffer.allocate(52428800);
+        this.buffer = ByteBuffer.allocate(0);
         this.response = new ServerResponse();
         this.logger = LogManager.getLogger();
         this.databaseManager = databaseManager;
@@ -67,6 +67,13 @@ public class ServerCommandManager extends CommandManager {
         Integer id = databaseManager.getNextOwnerId();
         try {
             PreparedStatement statement = databaseManager.getConnection().prepareStatement("insert into users (id, login, password) values (?,?,?)");
+            ResultSet set = databaseManager.getConnection().createStatement().executeQuery("select login  from users where login ='" + request.getLogIn()+"'");
+            if (set.next()){
+                response.setOwnerId(0);
+                response.setResponse("this login is already exist\n enter different one");
+                sendResponse();
+                return false;
+            }
             statement.setInt(1,id);
             statement.setString(2,request.getLogIn());
             statement.setString(3,getHash(request.getPassword() + id));
@@ -98,7 +105,7 @@ public class ServerCommandManager extends CommandManager {
             }
             if (flag == false){
                 response.setResponse("no such login or wrong password");
-
+                response.setOwnerId(0);
                 sendResponse();
                 return false;
             }
@@ -160,11 +167,12 @@ public class ServerCommandManager extends CommandManager {
 
 
     }
-    private void sendResponse() throws IOException {
-        buffer.put(serializer.serialize(response));
+    private  void sendResponse() throws IOException {
+        ByteBuffer toSend = ByteBuffer.wrap(serializer.serialize(response));
+//        ByteBuffer toSend = buffer.put(serializer.serialize(response));
         logger.info("created response: " + response);
         buffer.flip();
-        channel.send(buffer,clientAddress);
+        channel.send(toSend,clientAddress);
         logger.info("response sent to " + clientAddress);
         buffer.clear();
         resetResponse();

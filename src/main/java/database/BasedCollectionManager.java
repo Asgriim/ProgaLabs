@@ -47,7 +47,6 @@ public class BasedCollectionManager extends CollectionManager {
                 if (tempCity.getOwnerId().equals(ownerId)) iterator.remove();
             }
         } catch (SQLException e) {
-            // TODO: 17.05.2022 убрать стек трейс
             e.printStackTrace();
         }
     }
@@ -56,14 +55,11 @@ public class BasedCollectionManager extends CollectionManager {
     public Boolean removeById(int id, Integer ownerId){
         String s = "select id from collection where id = ? and ownerid = ?";
         try {
-//            boolean flag = false;
             PreparedStatement statement = databaseManager.getConnection().prepareStatement(s);
             statement.setInt(1, id);
             statement.setInt(2,ownerId);
             ResultSet set = statement.executeQuery();
-            // TODO: 17.05.2022 проверить на баги
             if (!set.next()) return false;
-//            statement = databaseManager.getConnection().prepareStatement(s)
             return removeById(id);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -97,7 +93,6 @@ public class BasedCollectionManager extends CollectionManager {
         try {
             databaseManager.getConnection().createStatement().execute("delete from collection where id = " + temp.getId());
         } catch (SQLException e) {
-            // TODO: 17.05.2022 удалить стек трейс
             e.printStackTrace();
             return false;
         }
@@ -116,7 +111,6 @@ public class BasedCollectionManager extends CollectionManager {
     public City removeHead(Integer ownerId) {
         City temp = getCollection().stream().filter(x -> x.getOwnerId().equals(ownerId)).findFirst().orElse(null);
         if (temp == null) return null;
-        // TODO: 17.05.2022 протестить
         City t = temp;
         removeById(temp.getId());
 
@@ -163,7 +157,6 @@ public class BasedCollectionManager extends CollectionManager {
         else {
             tempCity.getGovernor().setName(argument[9]);
         }
-        // TODO: 17.05.2022 проверить на баги
         tempCity.setOwnerId(ownerId);
         return tempCity;
     }

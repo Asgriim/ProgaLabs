@@ -6,7 +6,6 @@ import data.Climate;
 import data.StandardOfLiving;
 import database.BasedCollectionManager;
 import database.DatabaseManager;
-import exсeptions.FileIssueException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import utility.CollectionManager;
@@ -24,72 +23,85 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
     private Command exit;
     private Command save;
+    private BufferedReader console;
+    private DatagramChannel channel;
+    private Logger logger;
+    private DatabaseManager databaseManager;
+    private SocketAddress clientAddress;
+    private ByteBuffer bufferFromClient;
+    private CollectionManager collectionManager;
+    private FileManager fileManager;
     public Server(){
         this.exit = new Exit("exit","none","none");
+        this.logger = LogManager.getLogger();
+        this.console = new BufferedReader(new InputStreamReader(System.in));
+        this.databaseManager = new DatabaseManager();
+        this.bufferFromClient = ByteBuffer.allocate(8192);
+    }
+
+    public void prepareChannel(String hostName, int port){
+        try {
+            channel = DatagramChannel.open();
+            channel.bind(new InetSocketAddress(InetAddress.getByName(hostName),port));
+            channel.configureBlocking(false);
+        } catch (UnknownHostException e) {
+            System.out.println("no such host");
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void run(String hostName,int port)  {
-        Logger logger = LogManager.getLogger();
         try {
-            DatabaseManager databaseManager = new DatabaseManager();
-            String input = "";
-            BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-            DatagramChannel channel = DatagramChannel.open();
-            channel.bind(new InetSocketAddress(InetAddress.getByName(hostName), port));
-            channel.configureBlocking(false);
-            SocketAddress clientAddress = null;
+            prepareChannel(hostName,port);
             SerializationHelper serializer = new SerializationHelper();
             logger.info("current envVar = " + System.getenv("LABA"));
-            FileManager fileManager = new FileManager("LABA");
-            CollectionManager collectionManager = new BasedCollectionManager(fileManager,databaseManager);
+            this.fileManager = new FileManager("LABA");
+            this.collectionManager = new BasedCollectionManager(fileManager,databaseManager);
             this.save = new Save("save","none","none",collectionManager);
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-            // TODO: 17.05.2022 поправить 
             ServerCommandManager commandManager = new ServerCommandManager(fileManager,writer,channel,databaseManager);
             collectionManager.setCityCollection(databaseManager.getCollectionFromBase());
             databaseManager.setSequences();
-//                collectionManager.setCityCollection(fileManager.parseFromFile());
-            // TODO: 16.05.2022 почистить
-//            if (!collectionManager.checkCollection()) {
-//                logger.error("error ot 55 line");
-//                logger.error("wrong xml data\nenter fields in file properly");
-//                System.exit(1);
-//            }
-
             addCommands(commandManager,collectionManager,fileManager);
             commandManager.createClassMap();
             logger.info("created all command instances");
-            ByteBuffer buffer = ByteBuffer.allocate(2048);
             ServerRequest request;
             logger.info("server is ready");
+            ExecutorService executorService = Executors.newFixedThreadPool(7);
+            new Thread(() -> {
+                while (true) waitInput();
+            }).start();
+
             while (true){
-                if (System.in.available() > 0){
-                    input = console.readLine().toLowerCase(Locale.ROOT);
-                    if (input.equals("save")){
-                        save.execute(null);
-                        logger.info("save executed");
-                    }
-                    if (input.equals("exit")){
-//                        save.execute(null);
-                        logger.info("saved, shutdown");
-                        exit.execute(null);
-                    }
-                }
-                clientAddress = channel.receive(buffer);
+                clientAddress = channel.receive(bufferFromClient);
                 if (clientAddress != null){
                     logger.info("received a request from: " + clientAddress);
                     try {
-                        request = (ServerRequest) serializer.deSerialization(buffer);
+                        request = (ServerRequest) serializer.deSerialization(bufferFromClient);
                         logger.info("starting to do: " + request);
-                        commandManager.setClientAddress(clientAddress);
-                        commandManager.setRequest(request);
-                        commandManager.setArgument(request.getArgument());
-                        commandManager.handle(request.getCommand());
-                        buffer.clear();
+
+                        ServerRequest finalRequest = request;
+                        SocketAddress finalClientAddress = clientAddress;
+                        executorService.execute(() ->{
+                            try {
+                                commandManager.setClientAddress(finalClientAddress);
+                                commandManager.setRequest(finalRequest);
+                                commandManager.setArgument(finalRequest.getArgument());
+                                commandManager.handle(finalRequest.getCommand());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                        bufferFromClient.clear();
                     } catch (ClassNotFoundException e) {
                         logger.error("serialization error");
                         logger.error(e.getMessage());
@@ -106,6 +118,26 @@ public class Server {
             System.exit(1);
         } catch (IOException e) {
             logger.error(e);
+        }
+    }
+
+    public void waitInput() {
+        String input;
+        try {
+            if (System.in.available() > 0){
+                input = console.readLine().toLowerCase(Locale.ROOT);
+                if (input.equals("save")){
+//                    save.execute(null);
+                    logger.info("save executed");
+                }
+                if (input.equals("exit")){
+    //                        save.execute(null);
+                    logger.info("saved, shutdown");
+                    exit.execute(null);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.stream.Collectors;
 
 /**
@@ -13,7 +14,8 @@ import java.util.stream.Collectors;
  */
 public class CollectionManager implements Serializable {
     private static final long serialVersionUID = 1;
-    private PriorityQueue<City> cityCollection;
+    private PriorityBlockingQueue<City> cityCollection;
+//    private PriorityQueue<City> cityCollection;
     private LocalDateTime initializationTime;
     private String type = "PriorityQueue";
     private FileManager fileManager;
@@ -24,7 +26,8 @@ public class CollectionManager implements Serializable {
      */
     public CollectionManager(FileManager fileManager){
         this.fileManager = fileManager;
-        this.cityCollection = new PriorityQueue<>();
+        this.cityCollection = new PriorityBlockingQueue();
+//        this.cityCollection = new PriorityQueue<>();
         this.initializationTime = LocalDateTime.now();
         this.idComparator = (o1, o2) -> o1.getId() - o2.getId();
     }
@@ -33,7 +36,7 @@ public class CollectionManager implements Serializable {
      *
      * @return city collection
      */
-    public PriorityQueue<City> getCollection() {
+    public PriorityBlockingQueue<City> getCollection() {
         return cityCollection;
     }
 
@@ -89,13 +92,23 @@ public class CollectionManager implements Serializable {
     }
 
     public City removeHead(){
-       return this.cityCollection.poll();
+        try {
+            return this.cityCollection.take();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public City removeHead(Integer ownerId){return null;}
 
     public boolean removeFirst(){
-        if(this.cityCollection.poll() == null) return false;
+        try {
+            if(this.cityCollection.take() == null) return false;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 
@@ -130,10 +143,10 @@ public class CollectionManager implements Serializable {
         return new City(createId(),name,new Coordinates(x,y),LocalDateTime.now(),area,population,metersAboveSeaLevel,
                 telephoneCode,climate,standardLiving,new Human(humanName));
      }
-
+     @Deprecated
      public Boolean saveCollectionToFile(){
         try {
-            fileManager.parseToFile(cityCollection);
+            fileManager.parseToFile(null);
         } catch (FileIssueException | IOException | JAXBException e) {
             return false;
         }
@@ -148,7 +161,7 @@ public class CollectionManager implements Serializable {
         return type;
     }
 
-    public void setCityCollection(PriorityQueue<City> cityCollection) {
+    public void setCityCollection(PriorityBlockingQueue<City> cityCollection) {
         this.cityCollection = cityCollection;
     }
 

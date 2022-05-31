@@ -2,20 +2,42 @@ package database;
 
 import data.*;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.PriorityQueue;
+import java.util.Properties;
+import java.util.concurrent.PriorityBlockingQueue;
 
 public class DatabaseManager {
-    public Connection getConnection(){
-        // TODO: 16.05.2022 убрать пароль
+    private Connection connection;
+
+    public DatabaseManager() {
+        Path path = Paths.get("config.properties");
         try {
-            return DriverManager.getConnection("jdbc:postgresql://localhost:1111/studs","s335181",System.getenv("LABA"));
-        } catch (SQLException e) {
+            FileInputStream fileInputStream = new FileInputStream(path.toFile());
+            Properties properties = new Properties();
+            properties.load(fileInputStream);
+            if (properties.getProperty("link") == null || properties.getProperty("pass") == null) {
+                System.out.println("no linl or pass properties in config file");
+                System.exit(1);
+            }
+            this.connection = DriverManager.getConnection(properties.getProperty("link"),"s335181",properties.getProperty("pass"));
+        } catch (IOException e) {
+            System.out.println("config.properties not found");
             e.printStackTrace();
-            return null;
-            // TODO: 16.05.2022 убрать стек трейс
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
+
+    }
+
+    public Connection getConnection(){
+        return connection;
     }
 
     public int getNextOwnerId(){
@@ -35,7 +57,6 @@ public class DatabaseManager {
         try {
             set = getConnection().createStatement().executeQuery("select nextval('id_generator')");
             set.next();
-            System.out.println(set.getInt("nextval"));
             return set.getInt("nextval");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -54,16 +75,15 @@ public class DatabaseManager {
             set = getConnection().createStatement().executeQuery("select MAX(id) from users");
             set.next();
             id = set.getInt("max") + 1;
-            System.out.println(id);
             getConnection().createStatement().execute("create sequence if not exists ownerid_generator start with " + id + " increment by 1 minvalue 0");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public PriorityQueue getCollectionFromBase(){
+    public PriorityBlockingQueue<City> getCollectionFromBase(){
         City tempCity;
-        PriorityQueue<City> priorityQueue = new PriorityQueue<>();
+        PriorityBlockingQueue<City> priorityQueue = new PriorityBlockingQueue<>();
         Connection connection = getConnection();
         String query = "select * from collection";
         try {

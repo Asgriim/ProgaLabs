@@ -36,9 +36,9 @@ public class Client {
         request.setArgument(new String[0]);
         request.setCommand("api command");
         SerializationHelper serializator = new SerializationHelper();
-        ByteBuffer bufferToServer = ByteBuffer.allocate(2048);
+        ByteBuffer bufferToServer = ByteBuffer.allocate(100000);
         String input = "";
-        ByteBuffer fromServer = ByteBuffer.allocate(2048);
+        ByteBuffer fromServer = ByteBuffer.allocate(1000000);
         boolean auth = false;
         ServerResponse response = null;
         while (!auth) {
@@ -98,6 +98,7 @@ public class Client {
 
             try {
                 response = (ServerResponse) serializator.deSerialization(fromServer);
+                fromServer.clear();
             } catch (ClassNotFoundException e) {
                 writer.write("data from server was corrupted\ntry later");
                 writer.flush();
@@ -105,7 +106,7 @@ public class Client {
             }
             if (response.getOwnerId() != 0) auth = true;
             else {
-                writer.write(response.getResponse());
+                writer.write(response.getResponse()+"\n");
                 writer.flush();
             }
         }

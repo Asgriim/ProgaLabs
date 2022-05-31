@@ -157,7 +157,7 @@ public class ClientCommandManager extends CommandManager {
         }
         tryCount = 0;
 
-        buffer.flip();
+//        buffer.flip();
         try {
             response = (ServerResponse) serializer.deSerialization(buffer);
         } catch (ClassNotFoundException e) {

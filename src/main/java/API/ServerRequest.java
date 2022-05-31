@@ -10,7 +10,6 @@ public class ServerRequest implements Serializable {
     private String[] argument;
     private String command;
     private String[] id;
-    // TODO: 17.05.2022 доделать
     private Integer ownerId;
     private String logIn;
     private String password;
