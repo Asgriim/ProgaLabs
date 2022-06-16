@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<TabPane prefWidth="998.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.lab8_2.MainTableController">
+   <tabs>
+      <Tab fx:id="tableTab" text="table">
+         <content>
+            <AnchorPane prefHeight="695.0" prefWidth="998.0">
+               <children>
+                  <TableView fx:id="mainTable" layoutX="8.0" layoutY="44.0" onMouseClicked="#mouseClicked" prefHeight="460.0" prefWidth="996.0">
+                    <columns>
+                      <TableColumn fx:id="id" prefWidth="75.0" text="id" />
+                      <TableColumn fx:id="name" prefWidth="75.0" text="name" />
+                        <TableColumn prefWidth="75.0" text="x" fx:id="x" />
+                        <TableColumn fx:id="y" prefWidth="75.0" text="y" />
+                        <TableColumn fx:id="date" prefWidth="91.20001220703125" text="creation date" />
+                        <TableColumn fx:id="area" prefWidth="60.0" text="area" />
+                        <TableColumn fx:id="population" prefWidth="75.0" text="population" />
+                        <TableColumn fx:id="sea" prefWidth="105.60000610351562" text="meters above sea" />
+                        <TableColumn fx:id="telephone" prefWidth="66.4000244140625" text="telephone" />
+                        <TableColumn fx:id="climate" prefWidth="105.066650390625" text="climate" />
+                        <TableColumn fx:id="sol" prefWidth="86.93328857421875" text="SOL" />
+                        <TableColumn fx:id="governorName" prefWidth="96.533203125" text="governor name" />
+                    </columns>
+                  </TableView>
+                  <Button fx:id="add" layoutX="16.0" layoutY="519.0" mnemonicParsing="false" onAction="#addCommand" prefHeight="28.0" prefWidth="90.0" text="Add" />
+                  <Button fx:id="addIfMax" layoutX="16.0" layoutY="558.0" mnemonicParsing="false" onAction="#addIfMax" prefHeight="28.0" prefWidth="90.0" text="Add if max" />
+                  <Button fx:id="clearButton" layoutX="16.0" layoutY="599.0" mnemonicParsing="false" onAction="#clearCommand" prefHeight="28.0" prefWidth="90.0" text="Clear" />
+                  <Button fx:id="updateTableButton" layoutX="860.0" layoutY="10.0" mnemonicParsing="false" onAction="#updateTableAction" prefHeight="26.0" prefWidth="115.0" text="Update table" />
+                  <Button fx:id="countBySOLButton" layoutX="479.0" layoutY="599.0" mnemonicParsing="false" onAction="#countBySOLCommand" prefHeight="28.0" prefWidth="134.0" text="Count by SOL" />
+                  <Button fx:id="scriptButton" layoutX="140.0" layoutY="557.0" mnemonicParsing="false" onAction="#scriptCommand" prefHeight="28.0" prefWidth="90.0" text="Script" />
+                  <Button fx:id="helpButton" layoutX="140.0" layoutY="598.0" mnemonicParsing="false" onAction="#helpCommand" prefHeight="28.0" prefWidth="90.0" text="Help" />
+                  <Button fx:id="infoButton" layoutX="140.0" layoutY="519.0" mnemonicParsing="false" onAction="#infoCommand" prefHeight="28.0" prefWidth="90.0" text="Info" />
+                  <Button fx:id="printUniqSolButton" layoutX="372.0" layoutY="555.0" mnemonicParsing="false" onAction="#printUniqSolButton" prefHeight="69.0" prefWidth="90.0" text="Print unique SOL" textAlignment="CENTER" wrapText="true" />
+                  <Button fx:id="removeByClimateButton" layoutX="643.0" layoutY="599.0" mnemonicParsing="false" onAction="#removeByClimateCommand" prefHeight="28.0" prefWidth="134.0" text="Remove any by climate" />
+                  <Button fx:id="removeHeadButton" layoutX="265.0" layoutY="557.0" mnemonicParsing="false" onAction="#removeHeadCommand" prefHeight="28.0" prefWidth="92.0" text="remove head" />
+                  <Button fx:id="removeFirstButton" layoutX="265.0" layoutY="597.0" mnemonicParsing="false" onAction="#removeFirstCommand" prefHeight="28.0" prefWidth="90.0" text="remove first " />
+                  <Button fx:id="removeByIdButton" layoutX="265.0" layoutY="517.0" mnemonicParsing="false" onAction="#removeByIdCommand" prefHeight="28.0" prefWidth="90.0" text="remove by id " />
+                   <Button fx:id="ruButton" layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#ruLocalization" text="RU" />
+                   <Button fx:id="rsButton" layoutX="50.0" layoutY="10.0" mnemonicParsing="false" onAction="#rsLocalization" text="RS" />
+                   <Button fx:id="plButton" layoutX="94.0" layoutY="10.0" mnemonicParsing="false" onAction="#plLocalization" text="PL" />
+                   <Button fx:id="esButton" layoutX="130.0" layoutY="10.0" mnemonicParsing="false" onAction="#esLocalization" text="ES" />
+                  <ChoiceBox fx:id="climateChoiceBox" layoutX="643.0" layoutY="545.0" prefHeight="26.0" prefWidth="134.0" />
+                  <ChoiceBox fx:id="solChoiceBox" layoutX="479.0" layoutY="545.0" prefHeight="26.0" prefWidth="134.0" />
+                  <AnchorPane layoutX="809.0" layoutY="522.0" prefHeight="121.0" prefWidth="173.0" style="-fx-background-color: #252525;" />
+                  <Label fx:id="outputField" alignment="TOP_LEFT" layoutX="811.0" layoutY="526.0" prefHeight="111.0" prefWidth="174.0" textFill="#50c878" wrapText="true" />
+                  <TextField fx:id="idTextField" layoutX="372.0" layoutY="519.0" prefHeight="26.0" prefWidth="90.0" promptText="id" />
+                  <Button fx:id="deleteRow" layoutX="770.0" layoutY="10.0" mnemonicParsing="false" onAction="#deleteRow" prefHeight="26.0" prefWidth="66.0" text="Delete" />
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+      <Tab fx:id="canvasTab" text="Canvas">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <ImageView fitHeight="626.0" fitWidth="1115.0" layoutX="-32.0" layoutY="-2.0" opacity="0.89">
+                     <image>
+                        <Image url="@map.jpg" />
+                     </image>
+                  </ImageView>
+                  <Canvas fx:id="canvas" height="612.0" layoutX="-1.0" layoutY="-4.0" width="1002.0" />
+               </children></AnchorPane>
+        </content>
+      </Tab>
+   </tabs>
+</TabPane>
