@@ -1,0 +1,29 @@
+.pane{
+    -fx-background-color: linear-gradient(from 20% 20% to 100% 100%, #201f1f, #191818);
+}
+.but{
+    -fx-text-fill: #f0e6e6;
+    -fx-background-color: #308cd5;
+    -fx-background-radius: 7;
+}
+.table-view{
+    -fx-background-color:#201f1f;
+}
+.bebra{
+    -fx-fill: #f0e6e6;
+}
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+.table-view .table-cell{
+    -fx-border-color: transparent;
+    /*-fx-padding: 2 0 2 10px;*/
+    /*-fx-text-fill: black;*/
+}
+.table-row-cell:selected{
+    -fx-background-color: black;
+}
+.txt{
+    -fx-text-fill: #308cd5;
+    /*-fx-fill: #f0e6e6;*/
+}
